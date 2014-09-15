@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Emigrating - Better off ?</title>
+  <meta charset="utf-8">
+  <meta name="description" content="Emigrating - Better off ?">
+  <meta name="author" content="Pramesh Rogbeer">
+  <meta name="generator" content="slidify" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta http-equiv="X-UA-Compatible" content="chrome=1">
+  <link rel="stylesheet" href="libraries/frameworks/io2012/css/default.css" media="all" >
+  <link rel="stylesheet" href="libraries/frameworks/io2012/css/phone.css" 
+    media="only screen and (max-device-width: 480px)" >
+  <link rel="stylesheet" href="libraries/frameworks/io2012/css/slidify.css" >
+  <link rel="stylesheet" href="libraries/highlighters/highlight.js/css/tomorrow.css" />
+  <base target="_blank"> <!-- This amazingness opens all links in a new tab. -->  <link rel=stylesheet href="./assets/css/ribbons.css"></link>
+
+  
+  <!-- Grab CDN jQuery, fall back to local if offline -->
+  <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.7.min.js"></script>
+  <script>window.jQuery || document.write('<script src="libraries/widgets/quiz/js/jquery.js"><\/script>')</script> 
+  <script data-main="libraries/frameworks/io2012/js/slides" 
+    src="libraries/frameworks/io2012/js/require-1.0.8.min.js">
+  </script>
+  
+  
+
+</head>
+<body style="opacity: 0">
+  <slides class="layout-widescreen">
+    
+    <!-- LOGO SLIDE -->
+        <slide class="title-slide segue nobackground">
+  <hgroup class="auto-fadein">
+    <h1>Emigrating - Better off ?</h1>
+    <h2>DDP Slidify Assignment</h2>
+    <p>Pramesh Rogbeer<br/></p>
+  </hgroup>
+  <article></article>  
+</slide>
+    
+
+    <!-- SLIDES -->
+    <slide class="" id="slide-1" style="background:;">
+  <hgroup>
+    <h3>1. The Application</h3>
+  </hgroup>
+  <article data-timings="">
+    <p><strong>APPLICATION</strong> :     <a href="https://pramesh.shinyapps.io/DDPFinal">DDPFinal</a> located at <a href="https://pramesh.shinyapps.io/DDPFinal/">https://pramesh.shinyapps.io/DDPFinal/</a></p>
+
+<p><strong>OBJECTIVE</strong>: Provide you with a few predictions on what to expect if you plan to emigrate.</p>
+
+<p><strong>DATA</strong> : Census data (and report) from 2013 was downloaded from the <a href="http://hdr.undp.org/en/data">UNDP site</a> </p>
+
+<ul>
+<li><p>The UNDP collects data from all over the world to calculate an annual  <strong><em>Human Development Index</em></strong> (HDI) for each country. This index provides a measure of people&#39;s wellbeing in different parts of the world. The HDI is made up of various independent indices. </p></li>
+<li><p>The <a href="https://pramesh.shinyapps.io/DDPFinal">DDPFinal</a> application uses a selection of these indices , but can be effortlessly modified to use a wider range .</p></li>
+<li><p>The <a href="https://pramesh.shinyapps.io/DDPFinal">DDPFinal</a> application &quot;predicts&quot; how, compared to now, your quality of life could improve/degrade if you emigrated elsewhere</p></li>
+<li><p>the results are provided in tabular and graphical forms</p></li>
+</ul>
+
+<p>Have fun !!</p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="class" id="id" style="background:;">
+  <hgroup>
+    <h3>2. The Logic</h3>
+  </hgroup>
+  <article data-timings="">
+    <h3>INPUT:</h3>
+
+<p>At the user interface: (1) your <code>current location</code> (2) where you want to <code>emigrate</code> , and (3) your <code>gender</code>. (Gender has an impact too - you can try it)</p>
+
+<h3>OUTPUT:</h3>
+
+<p>The output gives you the % change ( +ve or -ve) to expect in 12 different indicators. (e.g. life expectancy, taxation. etc.).The Computation is quite straighforward  :</p>
+
+<p><code>Result = (Value for Current Location - Value for Destination )</code> </p>
+
+<h3>RESULTS:</h3>
+
+<p>The results are presented in:</p>
+
+<ul>
+<li>a table (all values are in %)</li>
+<li>a histogram with values <code>&gt;0</code> (improvements) and <code>&lt;0</code> (loss in quality)</li>
+</ul>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="class" id="id" style="background:;">
+  <hgroup>
+    <h3>3. The coding</h3>
+  </hgroup>
+  <article data-timings="">
+    <p>Some key points of the code : the full code is on my <a href="https://github.com/Pramesh1/DDSlide2">github</a><br>
+(I set <code>echo=FALSE</code> to hide the code - it is too long)</p>
+
+<p>For this presentation, I preset the input variables as follows:</p>
+
+<pre><code class="r">countryNow=&quot;Mauritius&quot;
+countryFuture=&quot;Germany&quot;
+gender=&quot;Male&quot;
+</code></pre>
+
+<p>Output Result:
+(Please take a look at the app on shiny.io to get an explanation of the result)</p>
+
+<pre><code>##     hdi.rank hdi.gii     hdi hdi.r    le    gni taxes   cpi     hom   sat
+## 63      90.5   -87.7    18.4  -0.5 -11.4 -135.2  -2.8 -25.7     2.6  -1.2
+## 631  BETTER!   Worse BETTER! Worse Worse  Worse Worse Worse BETTER! Worse
+##      free   trust
+## 63     -7      15
+## 631 Worse BETTER!
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="class" id="id" style="background:;">
+  <hgroup>
+    <h3>4. CHALLENGES:</h3>
+  </hgroup>
+  <article data-timings="">
+    <p>The <code>csv</code> data was loaded into a variable in the <code>server.R</code> file. But is was impossible to <code>dynamically</code> pass a list (countries listing) to the input part of the <code>ui.R</code> file. This problem could not be solved despite intensive search on the web.
+I finally ended up building this list inside the <code>ui.R</code> file itself. </p>
+
+<p>Then there was the famous <code>UTF-8</code> encoding problem ... The app was not launching on the shiny server even though it was working perfectly on my laptop. After some search , I found out that I had to save the files with <code>UTF-8</code> encoding. Once this done, everything came back to normal.</p>
+
+<p>I enjoyed this project quite a lot.</p>
+
+<p>The application can be further improved. For example , a color scheme can be used for the histogram, e.g. GREEN for <code>&gt;0</code> and RED for <code>&lt;0</code> . </p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+    <slide class="backdrop"></slide>
+  </slides>
+  <div class="pagination pagination-small" id='io2012-ptoc' style="display:none;">
+    <ul>
+      <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=1 title='1. The Application'>
+         1
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=2 title='2. The Logic'>
+         2
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=3 title='3. The coding'>
+         3
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=4 title='4. CHALLENGES:'>
+         4
+      </a>
+    </li>
+  </ul>
+  </div>  <!--[if IE]>
+    <script 
+      src="http://ajax.googleapis.com/ajax/libs/chrome-frame/1/CFInstall.min.js">  
+    </script>
+    <script>CFInstall.check({mode: 'overlay'});</script>
+  <![endif]-->
+</body>
+  <!-- Load Javascripts for Widgets -->
+  
+  <!-- LOAD HIGHLIGHTER JS FILES -->
+  <script src="libraries/highlighters/highlight.js/highlight.pack.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script>
+  <!-- DONE LOADING HIGHLIGHTER JS FILES -->
+   
+  </html>

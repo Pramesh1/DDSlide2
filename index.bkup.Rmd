@@ -1,0 +1,149 @@
+---
+title       : Impact of Relocating
+subtitle    : DDP Slidify Assignment
+author      : Pramesh Rogbeer
+job         : 
+framework   : io2012        # {io2012, html5slides, shower, dzslides, ...}
+highlighter : highlight.js  # {highlight.js, prettify, highlight}
+hitheme     : tomorrow      # 
+widgets     : []            # {mathjax, quiz, bootstrap}
+mode        : selfcontained # {standalone, draft}
+knit        : slidify::knit2slides
+---
+## 1. The Application 
+
+**APPLICATION** :     [DDPFinal](http://example.com/) located at https://pramesh.shinyapps.io/DDPFinal/
+
+**OBJECTIVE**: Provide you with a few predictions on what to expect if you plan to emigrate.
+
+**DATA** : The simulation is based on real data (2013) available at the [UNDP site](http://hdr.undp.org/en/data) 
+
+
+
+- The UNDP collects data from all over the world to calculate and publish, annually, a ***Human Development Index*** (HDI) for each country. This index is a measure of human wellbeing for the country. Several independent indicators are to be found in this HDI index. 
+
+- A select few of these indicators were retained for use in the [DDPFinal](http://example.com/) application.
+
+- The [DDPFinal](http://example.com/) application "predicts" how, compared to now, your quality of life could improve/degrade if you emigrated elsewhere
+
+- the results are provided in tabular and graphical forms
+
+
+Have fun !!
+
+
+
+--- .class #id 
+
+## 2. The Logic
+
+### INPUT:  
+ At the user interface: (1) your `current location` (2) where you want to `emigrate` , and (3) your `gender`
+
+### OUTPUT: 
+The output gives you the % change ( +ve or -ve) in 12 different indicators.  
+Computation is quite straighforward :
+
+`Result for Indicator = (Value for Current Location - Value for Destination ) ` (%)
+
+### RESULTS:
+The results are presented in:
+
+- a table (all values are in %)
+- a histogram with values >0 (improvements) and <0 (loss in quality)
+
+
+
+
+--- .class #id 
+
+## 3. The coding
+Some key points of the code : the full code is on my [github](https://github.com/Pramesh1/DDProd)
+(`echo=FALSE`to hoide the code - it is too long)
+```{r,echo=FALSE }
+
+library(shiny)
+library(xtable)
+# Load data ----
+mdata<-read.csv("ddprod-pr.csv", header=TRUE)
+mdata[,1]<-as.character(mdata[,1])  # preprocess data
+
+countryNow="Mauritius"
+countryFuture="Germany"
+gender="Male"
+
+
+
+        
+        my.now<-mdata[grep(countryNow,mdata$country),]
+        my.fut<-mdata[grep(countryFuture,mdata$country),]
+        country.n<-my.now[,1]
+        country.f<-my.fut[,1]
+        
+        m<-c(2,3,5,6,8,10,11,12,13,14,15,16)   # remove country name
+        f<-c(2,3,4,6,7,9,11,12,13,14,15,16)
+        
+        if(gender=="Male"){                      
+                data.now<-my.now[,m] 
+                data.fut<-my.fut[,m] 
+                
+        } else {
+                data.now<-my.now[,f]
+                data.fut<-my.fut[,f] 
+        }
+        
+        names(data.now)[3] <- "hdi"
+        names(data.fut)[3] <- "hdi"
+        names(data.now)[5] <- "le"
+        names(data.fut)[5] <- "le"
+        names(data.now)[6] <- "gni"
+        names(data.fut)[6] <- "gni"
+        
+        data.result<-data.now-data.fut
+        data.result$hdi.gii<-data.result$hdi.gii*-1
+        data.result$hdi<-data.result$hdi*-1
+        data.result$taxes<-data.result$taxes*-1
+        data.result$cpi<-data.result$cpi*-1
+        
+        give.result<-data.result
+        yy<-(data.result/data.now)*100
+        data.result[,1:6]<-yy[,1:6] # convert all to percentages
+        data.result[,8]<-yy[,8]
+        data.result<-round(data.result,1)
+        
+        for (i in 1:12)
+        {
+                if (give.result[i]<0) {give.result[i] = "Worse"}
+                else{give.result[i] ="BETTER!"}
+        }            
+        
+        
+        youresult<-rbind(data.result,give.result)      
+        
+        
+        if (countryNow==countryFuture) {
+                ymessage <- "Sorry , You do not seem to be relocation outside of your current country"
+        } else {
+                ymessage <- "Here is what awaits you: "
+        } 
+        
+        
+        
+     youresult
+
+```
+
+
+--- .class #id 
+
+### 4. CHALLENGES:
+
+The `csv` data was loaded to a variable in the `server.R` file. But is was impossible to `dynamically`pass a list (countries listing) to the input part of the `ui.R`file. This problem could not be solved despite intensive search on the web.
+I finally ended up building this list inside the `ui.R` file itself. 
+
+Then there was the famous `UTF-8` encoding problem ... The app was not launching on the shiny server eben if it was working perfectly well on my laptop. After some search on the web, i found i had to save them all with `UTF-8`encoding. Once this done everything came back to normal.
+
+
+I enjoyed thgis projcct quite a lot.
+
+
